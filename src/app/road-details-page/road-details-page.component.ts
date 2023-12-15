@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RoadsService } from '../services/roads.service';
 import { RoadWorks } from './../interfaces/road-works';
 import { MatListModule } from '@angular/material/list';
@@ -14,7 +14,7 @@ import { ElectricStations } from '../interfaces/electric-stations';
 @Component({
   selector: 'app-road-details-page',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule],
+  imports: [CommonModule, MatCardModule, MatListModule, RouterLink],
   template: `
     <section>
       <mat-card>
@@ -51,7 +51,9 @@ import { ElectricStations } from '../interfaces/electric-stations';
               <span matListItemTitle> {{ parking.title }}</span>
               <span matListItemLine> {{ parking.subtitle }}</span>
             </mat-list-item>
-            <mat-action-list>see more btn or something</mat-action-list>
+            <mat-action-list>
+              <a [routerLink]="['/infoList']">test</a>
+            </mat-action-list>
           </mat-list>
         </mat-card-content>
       </mat-card>
