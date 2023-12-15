@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { RoadDetailsComponent } from './road-details/road-details.component';
-import { InformationListComponent } from './informationList/information-list.component';
+import { RoadDetailsComponent } from './components/road-details/road-details.component';
 
 export const routes: Routes = [
   {
@@ -13,11 +12,6 @@ export const routes: Routes = [
     path: 'details/:id',
     component: RoadDetailsComponent,
     title: 'Details Page',
-  },
-  {
-    path: 'infoList',
-    component: InformationListComponent,
-    title: 'Information List',
   },
 ];
 

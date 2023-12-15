@@ -23,7 +23,7 @@ import { RouterLink } from '@angular/router';
   template: `
     <section class="results">
       <mat-grid-list cols="2" rowHeight="400px">
-        <mat-grid-tile *ngFor="let road of roads" (click)="goToDetails(road)">
+        <mat-grid-tile *ngFor="let road of roads">
           <div class="roadDetails">
             <h1 class="roadName">{{ road }}</h1>
             <a [routerLink]="['/details', road]" class="detailsText"
@@ -43,9 +43,5 @@ export class HomeComponent {
     this.roadService.getAllRoads().then((result: string[]) => {
       this.roads = result;
     });
-  }
-
-  goToDetails(roadID: string) {
-    console.log(roadID);
   }
 }

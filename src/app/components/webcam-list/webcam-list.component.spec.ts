@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RoadDetailsPageComponent } from './road-details-page.component';
+import { WebcamListComponent } from './webcam-list.component';
 
-describe('RoadDetailsPageComponent', () => {
-  let component: RoadDetailsPageComponent;
-  let fixture: ComponentFixture<RoadDetailsPageComponent>;
+describe('WebcamListComponent', () => {
+  let component: WebcamListComponent;
+  let fixture: ComponentFixture<WebcamListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RoadDetailsPageComponent]
+      imports: [WebcamListComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(RoadDetailsPageComponent);
+    fixture = TestBed.createComponent(WebcamListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
