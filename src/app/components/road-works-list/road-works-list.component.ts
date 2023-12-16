@@ -5,15 +5,27 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RoadsService } from '../../services/roads.service';
 import { RoadWorks } from '../../interfaces/road-works';
 import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { ListTableComponent } from '../list-table/list-table.component';
 
 @Component({
   selector: 'app-road-works-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule, RouterLink],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatListModule,
+    RouterLink,
+    MatButtonModule,
+    ListTableComponent,
+  ],
   template: `
     <section>
-      <mat-card>
-        <mat-card-header> Road works </mat-card-header>
+      <section class="buttonSection">
+        <button mat-raised-button color="primary">See on Map</button>
+      </section>
+
+      <!-- <mat-card>
         <mat-card-content>
           <mat-list>
             <mat-list-item *ngFor="let work of roadWorks.slice(0, 10)">
@@ -23,7 +35,11 @@ import { MatListModule } from '@angular/material/list';
             <mat-action-list>see more btn or something</mat-action-list>
           </mat-list>
         </mat-card-content>
-      </mat-card>
+      </mat-card> -->
+      <app-list-table
+        [tableData]="roadWorks"
+        (detailsClicked)="handleDetailsClick($event)"
+      ></app-list-table>
     </section>
   `,
   styleUrl: './road-works-list.component.css',
@@ -40,5 +56,9 @@ export class RoadWorksListComponent {
         .getRoadServices(roadId)
         .then((response) => (this.roadWorks = response));
     }
+  }
+
+  handleDetailsClick(itemId: string): void {
+    console.log(`Details clicked for item with ID ${itemId} in Parent 1`);
   }
 }

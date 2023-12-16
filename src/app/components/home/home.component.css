@@ -1,5 +1,5 @@
 mat-grid-tile {
-  background-image: url('../../assets/roadImage.jpg');
+  background-image: url('../../../assets/roadImage.jpg');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -25,4 +25,24 @@ mat-grid-tile {
   &:hover {
     color:blue;
   }
+}
+
+.homePage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="text"] {
+  border: solid 1px var(--primary-color);
+  padding: 10px;
+  border-radius: 8px;
+  margin-right: 4px;
+  display: flex;
+}
+
+.searchBar {
+  display: flex;
+  justify-content: end;
+  margin: 10px;
 }

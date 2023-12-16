@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { RoadWorksListComponent } from '../road-works-list/road-works-list.component';
 import { WebcamListComponent } from '../webcam-list/webcam-list.component';
@@ -7,6 +7,9 @@ import { ParkingLorriesListComponent } from '../parking-lorries-list/parking-lor
 import { WarningsListComponent } from '../warnings-list/warnings-list.component';
 import { ClosuresListComponent } from '../closures-list/closures-list.component';
 import { ChargingStationsListComponent } from '../charging-stations-list/charging-stations-list.component';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-road-details',
@@ -20,10 +23,25 @@ import { ChargingStationsListComponent } from '../charging-stations-list/chargin
     WarningsListComponent,
     ClosuresListComponent,
     ChargingStationsListComponent,
+    RouterLink,
+    MatButtonModule,
+    MatIconModule,
   ],
   template: `
     <section>
-      <section>Some text to say we are see the details of some route</section>
+      <section class="header">
+        <button mat-icon-button (click)="goBack()" color="primary">
+          <mat-icon
+            aria-hidden="false"
+            aria-label="Arrow back"
+            fontIcon="arrow_back_ios"
+          ></mat-icon>
+        </button>
+        <h3 class="text">
+          You can check all the info of {{ routeName }} and also you can see the
+          information on a map!
+        </h3>
+      </section>
       <section>
         <mat-tab-group>
           <mat-tab label="Road Works">
@@ -50,4 +68,17 @@ import { ChargingStationsListComponent } from '../charging-stations-list/chargin
   `,
   styleUrl: './road-details.component.css',
 })
-export class RoadDetailsComponent {}
+export class RoadDetailsComponent {
+  router: Router = new Router();
+  route: ActivatedRoute = inject(ActivatedRoute);
+  routeName: string = '';
+
+  constructor() {
+    const roadId = this.route.snapshot.params['id'];
+    if (roadId) this.routeName = roadId;
+  }
+
+  goBack() {
+    this.router.navigate(['/']);
+  }
+}
