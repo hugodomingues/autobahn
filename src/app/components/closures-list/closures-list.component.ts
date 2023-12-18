@@ -3,27 +3,40 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoadsService } from '../../services/roads.service';
 import { Closure } from '../../interfaces/closure';
+import { MatButtonModule } from '@angular/material/button';
+import { ListTableComponent } from '../list-table/list-table.component';
+import { NoDataComponentComponent } from '../no-data-component/no-data-component.component';
+import { DetailsInfo } from '../../interfaces/common';
 
 @Component({
   selector: 'app-closures-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatListModule,
+    MatButtonModule,
+    ListTableComponent,
+    NoDataComponentComponent,
+  ],
   template: `
-    <mat-card>
-      <mat-card-header>Closures </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let closure of closuresList.slice(0, 10)">
-            <span matListItemTitle> {{ closure.title }}</span>
-            <span matListItemLine> {{ closure.subtitle }}</span>
-          </mat-list-item>
-          <mat-action-list>see more btn or something</mat-action-list>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+    <section>
+      <section *ngIf="closuresList.length == 0">
+        <app-no-data-component></app-no-data-component>
+      </section>
+      <section *ngIf="closuresList.length > 0">
+        <section class="buttonSection">
+          <button mat-raised-button color="primary">See on Map</button>
+        </section>
+        <app-list-table
+          [tableData]="closuresList"
+          (detailsClicked)="handleDetailsClick($event)"
+        ></app-list-table>
+      </section>
+    </section>
   `,
   styleUrl: './closures-list.component.css',
 })
@@ -33,12 +46,28 @@ export class ClosuresListComponent {
 
   closuresList: Closure[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     const roadId = this.route.snapshot.params['id'];
     if (roadId) {
       this.roadService
         .getRoadClosures(roadId)
         .then((resp) => (this.closuresList = resp));
     }
+  }
+
+  handleDetailsClick(itemId: string): void {
+    this.roadService.getClosureDetails(itemId).then((response) => {
+      const dataToReturn: DetailsInfo = {
+        title: response.title,
+        subtitle: response.subtitle,
+        description: response.description,
+        identifier: response.identifier,
+        coordinate: response.coordinate,
+      };
+
+      this.router.navigate(['/details-page'], {
+        queryParams: { detailsData: JSON.stringify(dataToReturn) },
+      });
+    });
   }
 }

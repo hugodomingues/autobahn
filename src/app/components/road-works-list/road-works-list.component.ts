@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { RoadsService } from '../../services/roads.service';
 import { RoadWorks } from '../../interfaces/road-works';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { ListTableComponent } from '../list-table/list-table.component';
+import { NoDataComponentComponent } from '../no-data-component/no-data-component.component';
+import { DetailsInfo } from '../../interfaces/common';
 
 @Component({
   selector: 'app-road-works-list',
@@ -18,28 +20,23 @@ import { ListTableComponent } from '../list-table/list-table.component';
     RouterLink,
     MatButtonModule,
     ListTableComponent,
+    NoDataComponentComponent,
   ],
   template: `
     <section>
-      <section class="buttonSection">
-        <button mat-raised-button color="primary">See on Map</button>
+      <section *ngIf="roadWorks.length == 0">
+        <app-no-data-component></app-no-data-component>
       </section>
+      <section *ngIf="roadWorks.length > 0">
+        <section class="buttonSection">
+          <button mat-raised-button color="primary">See on Map</button>
+        </section>
 
-      <!-- <mat-card>
-        <mat-card-content>
-          <mat-list>
-            <mat-list-item *ngFor="let work of roadWorks.slice(0, 10)">
-              <span matListItemTitle> {{ work.title }}</span>
-              <span matListItemLine> {{ work.subtitle }}</span>
-            </mat-list-item>
-            <mat-action-list>see more btn or something</mat-action-list>
-          </mat-list>
-        </mat-card-content>
-      </mat-card> -->
-      <app-list-table
-        [tableData]="roadWorks"
-        (detailsClicked)="handleDetailsClick($event)"
-      ></app-list-table>
+        <app-list-table
+          [tableData]="roadWorks"
+          (detailsClicked)="handleDetailsClick($event)"
+        ></app-list-table>
+      </section>
     </section>
   `,
   styleUrl: './road-works-list.component.css',
@@ -49,7 +46,7 @@ export class RoadWorksListComponent {
   roadService: RoadsService = inject(RoadsService);
   roadWorks: RoadWorks[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     const roadId = this.route.snapshot.params['id'];
     if (roadId) {
       this.roadService
@@ -59,6 +56,18 @@ export class RoadWorksListComponent {
   }
 
   handleDetailsClick(itemId: string): void {
-    console.log(`Details clicked for item with ID ${itemId} in Parent 1`);
+    this.roadService.getRoadWorkDetails(itemId).then((response) => {
+      const dataToReturn: DetailsInfo = {
+        title: response.title,
+        subtitle: response.subtitle,
+        description: response.description,
+        identifier: response.identifier,
+        coordinate: response.coordinate,
+      };
+
+      this.router.navigate(['/details-page'], {
+        queryParams: { detailsData: JSON.stringify(dataToReturn) },
+      });
+    });
   }
 }

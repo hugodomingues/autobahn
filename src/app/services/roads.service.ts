@@ -64,4 +64,51 @@ export class RoadsService {
 
     return response.data.electric_charging_station;
   }
+
+  async getRoadWorkDetails(roadWork: string): Promise<RoadWorks> {
+    const response = await this.axiosInstance.get(
+      `/details/roadworks/${roadWork}`
+    );
+
+    return response.data;
+  }
+  async getClosureDetails(closureId: string): Promise<Closure> {
+    const response = await this.axiosInstance.get(
+      `/details/closure/${closureId}`
+    );
+
+    return response.data;
+  }
+
+  async getWebcamDetails(webcamId: string): Promise<Webcam> {
+    const response = await this.axiosInstance.get(
+      `/details/webcam/${webcamId}`
+    );
+
+    return response.data;
+  }
+
+  async getChargingStationDetails(
+    chargingStation: string
+  ): Promise<ElectricStations> {
+    const response = await this.axiosInstance.get(
+      `/details/electric_charging_station/${chargingStation}`
+    );
+
+    return response.data;
+  }
+  async getWarningDetails(warningDetailsId: string): Promise<Warning> {
+    const response = await this.axiosInstance.get(
+      `/details/warnings/${warningDetailsId}`
+    );
+
+    return response.data;
+  }
+  async getParkingDetails(parkingId: string): Promise<ElectricStations> {
+    const response = await this.axiosInstance.get(
+      `/details/parking_lorry/${parkingId}`
+    );
+
+    return response.data;
+  }
 }

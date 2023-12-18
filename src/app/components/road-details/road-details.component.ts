@@ -57,7 +57,7 @@ import { MatButtonModule } from '@angular/material/button';
             <app-warning-list></app-warning-list>
           </mat-tab>
           <mat-tab label="Closures">
-            <app-warning-list></app-warning-list>
+            <app-closures-list></app-closures-list>
           </mat-tab>
           <mat-tab label="Electric Charging Stations">
             <app-charging-stations-list></app-charging-stations-list>

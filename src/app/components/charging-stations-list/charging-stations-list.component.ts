@@ -3,27 +3,40 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoadsService } from '../../services/roads.service';
 import { ElectricStations } from '../../interfaces/electric-stations';
+import { MatButtonModule } from '@angular/material/button';
+import { ListTableComponent } from '../list-table/list-table.component';
+import { NoDataComponentComponent } from '../no-data-component/no-data-component.component';
+import { DetailsInfo } from '../../interfaces/common';
 
 @Component({
   selector: 'app-charging-stations-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatListModule,
+    MatButtonModule,
+    ListTableComponent,
+    NoDataComponentComponent,
+  ],
   template: `
-    <mat-card>
-      <mat-card-header>Electric Charging Stations </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let charging of chargingStations.slice(0, 10)">
-            <span matListItemTitle> {{ charging.title }}</span>
-            <span matListItemLine> {{ charging.subtitle }}</span>
-          </mat-list-item>
-          <mat-action-list>see more btn or something</mat-action-list>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+    <section>
+      <section *ngIf="chargingStations.length == 0">
+        <app-no-data-component></app-no-data-component>
+      </section>
+      <section *ngIf="chargingStations.length > 0">
+        <section class="buttonSection">
+          <button mat-raised-button color="primary">See on Map</button>
+        </section>
+        <app-list-table
+          [tableData]="chargingStations"
+          (detailsClicked)="handleDetailsClick($event)"
+        ></app-list-table>
+      </section>
+    </section>
   `,
   styleUrl: './charging-stations-list.component.css',
 })
@@ -33,12 +46,28 @@ export class ChargingStationsListComponent {
 
   chargingStations: ElectricStations[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     const roadId = this.route.snapshot.params['id'];
     if (roadId) {
       this.roadService
         .getElectricStations(roadId)
         .then((resp) => (this.chargingStations = resp));
     }
+  }
+
+  handleDetailsClick(itemId: string): void {
+    this.roadService.getChargingStationDetails(itemId).then((response) => {
+      const dataToReturn: DetailsInfo = {
+        title: response.title,
+        subtitle: response.subtitle,
+        description: response.description,
+        identifier: response.identifier,
+        coordinate: response.coordinate,
+      };
+
+      this.router.navigate(['/details-page'], {
+        queryParams: { detailsData: JSON.stringify(dataToReturn) },
+      });
+    });
   }
 }

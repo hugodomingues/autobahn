@@ -3,26 +3,39 @@ import { Webcam } from '../../interfaces/webcam';
 import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RoadsService } from '../../services/roads.service';
+import { ListTableComponent } from '../list-table/list-table.component';
+import { MatButtonModule } from '@angular/material/button';
+import { NoDataComponentComponent } from '../no-data-component/no-data-component.component';
+import { DetailsInfo } from '../../interfaces/common';
 
 @Component({
   selector: 'app-webcam-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatListModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatListModule,
+    ListTableComponent,
+    MatButtonModule,
+    NoDataComponentComponent,
+  ],
   template: `
-    <mat-card>
-      <mat-card-header>WebCam </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let webcam of webcamsList.slice(0, 10)">
-            <span matListItemTitle> {{ webcam.title }}</span>
-            <span matListItemLine> {{ webcam.subtitle }}</span>
-          </mat-list-item>
-          <mat-action-list>see more btn or something</mat-action-list>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
+    <section>
+      <section *ngIf="webcamsList.length == 0">
+        <app-no-data-component></app-no-data-component>
+      </section>
+      <section *ngIf="webcamsList.length > 0">
+        <section class="buttonSection">
+          <button mat-raised-button color="primary">See on Map</button>
+        </section>
+        <app-list-table
+          [tableData]="webcamsList"
+          (detailsClicked)="handleDetailsClick($event)"
+        ></app-list-table>
+      </section>
+    </section>
   `,
   styleUrl: './webcam-list.component.css',
 })
@@ -31,12 +44,29 @@ export class WebcamListComponent {
   roadService: RoadsService = inject(RoadsService);
   webcamsList: Webcam[] = [];
 
-  constructor() {
+  constructor(private router: Router) {
     const roadId = this.route.snapshot.params['id'];
     if (roadId) {
       this.roadService
         .getRoadCameras(roadId)
         .then((response) => (this.webcamsList = response));
     }
+  }
+
+  handleDetailsClick(itemId: string): void {
+    this.roadService.getWebcamDetails(itemId).then((response) => {
+      const dataToReturn: DetailsInfo = {
+        title: response.title,
+        subtitle: response.subtitle,
+        description: response.description,
+        identifier: response.identifier,
+        coordinate: response.coordinate,
+        imageUrl: response.imageurl,
+      };
+
+      this.router.navigate(['/details-page'], {
+        queryParams: { detailsData: JSON.stringify(dataToReturn) },
+      });
+    });
   }
 }
