@@ -51,8 +51,8 @@ export class DetailsPageComponent {
     description: [],
     identifier: '',
     coordinate: {
-      lat: '',
-      long: '',
+      lat: 0,
+      long: 0,
     },
   };
 

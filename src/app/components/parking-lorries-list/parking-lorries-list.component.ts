@@ -9,7 +9,9 @@ import { RoadsService } from '../../services/roads.service';
 import { MatButtonModule } from '@angular/material/button';
 import { ListTableComponent } from '../list-table/list-table.component';
 import { NoDataComponentComponent } from '../no-data-component/no-data-component.component';
-import { DetailsInfo } from '../../interfaces/common';
+import { Coordinate, DetailsInfo } from '../../interfaces/common';
+import { RoadMapComponent } from '../road-map/road-map.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-parking-lorries-list',
@@ -29,7 +31,9 @@ import { DetailsInfo } from '../../interfaces/common';
       </section>
       <section *ngIf="parkingLorryList.length > 0">
         <section class="buttonSection">
-          <button mat-raised-button color="primary">See on Map</button>
+          <button mat-raised-button color="primary" (click)="openDialog()">
+            See on Map
+          </button>
         </section>
         <app-list-table
           [tableData]="parkingLorryList"
@@ -44,6 +48,7 @@ export class ParkingLorriesListComponent {
   parkingLorryList: ParkingLorry[] = [];
   route: ActivatedRoute = inject(ActivatedRoute);
   roadService: RoadsService = inject(RoadsService);
+  dialog: MatDialog = inject(MatDialog);
 
   constructor(private router: Router) {
     const roadId = this.route.snapshot.params['id'];
@@ -67,6 +72,16 @@ export class ParkingLorriesListComponent {
       this.router.navigate(['/details-page'], {
         queryParams: { detailsData: JSON.stringify(dataToReturn) },
       });
+    });
+  }
+
+  openDialog() {
+    const coords: Coordinate[] = this.parkingLorryList.map((work) => {
+      return work.coordinate;
+    });
+    this.dialog.open(RoadMapComponent, {
+      width: '1000px',
+      data: coords,
     });
   }
 }
